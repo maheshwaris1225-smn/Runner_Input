@@ -1,0 +1,41 @@
+name: multiple runners and choose input 
+on: # multiple triggers when this workflow can run
+  workflow_dispatch:  # manually run code
+   inputs:
+    runner:
+      description: 'Select the runner to execute the workflow'
+      required: true
+      default: 'ubuntu-latest'
+      type: choice
+      options:
+        - ubuntu-latest
+        - windows-latest
+        - macos-latest
+    job-name:
+      description: 'Enter the job name to execute'
+      required: true
+      type: choice
+      options:
+        - build-jobs
+        - test-jobs
+        - deploy-jobs
+jobs:
+  build-jobs:
+    if: ${{ github.event.inputs.job-name == 'build-jobs' }}
+    runs-on: ${{ github.event.inputs.runner }}
+    steps:
+      - name: Build step
+        run: echo "Running build job on ${{ github.event.inputs.runner }}"
+  test-jobs:
+    if: ${{ github.event.inputs.job-name == 'test-jobs' }}
+    runs-on: ${{ github.event.inputs.runner }}
+    steps:
+      - name: Test step
+        run: echo "Running test job on ${{ github.event.inputs.runner }}"           
+  deploy-jobs:
+    if: ${{ github.event.inputs.job-name == 'deploy-jobs' }}
+    runs-on: ${{ github.event.inputs.runner }}
+    steps:
+      - name: Deploy step
+        run: echo "Running deploy job on ${{ github.event.inputs.runner }}"
+
